@@ -1,6 +1,13 @@
 # Artwork
 
-TODO: Write a gem description
+Automated image size detection and size scaling for your frontend, but done in
+the backend. Works for any browser. Delivers the information needed for the
+calculations (browser window's dimentions and device's pixel ratio) via a
+cookie.
+
+Example usage:
+
+    <%= artwork_tag person, :avatar, '100x' %>
 
 ## Installation
 
@@ -16,9 +23,18 @@ Or install it yourself as:
 
     $ gem install artwork
 
+## Configuration
+
+Set the following variables in an app initializer:
+
+- `Artwork.supported_resolutions_list`
+- `Artwork.default_resolution`
+
 ## Usage
 
-TODO: Write usage instructions here
+Add `Artwork::ViewHelper` to your view helpers.
+
+Include `Artwork::Model` in your models.
 
 ## Contributing
 
