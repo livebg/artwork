@@ -1,7 +1,7 @@
 # Artwork
 
-Automated image size detection and size scaling for your frontend, but done in
-the backend. Works for any browser. Delivers the information needed for the
+Automated image size scaling view helpers for your frontend, but done in the
+backend. Works for any browser. Delivers the information needed for the
 calculations (browser window's dimentions and device's pixel ratio) via a
 cookie.
 
