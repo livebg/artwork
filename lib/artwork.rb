@@ -1,5 +1,4 @@
-require "artwork/version"
+require 'artwork/version'
 
 module Artwork
-  # Your code goes here...
 end
