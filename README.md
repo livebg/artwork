@@ -42,7 +42,11 @@ Include `Artwork::Model` in your models which have artworks.
 Include `Artwork::Model` in your `ApplicationController` or wherever you want
 to have the artwork functionality.
 
-Then use `Artwork.load_2x_images?` and `Artwork.current_resolution`.
+Then you can use `Artwork.load_2x_images?`, `Artwork.current_resolution` and
+the `artwork_tag` view helper. Example:
+
+    <%= artwork_tag @film, :board, :'1440x', :image => {:class => 'poster'} %>
+    <%= artwork_tag @gallery, :cover, :'900x' %>
 
 ## Contributing
 
