@@ -3,7 +3,7 @@
 Automated image size scaling view helpers for your frontend, but done in the
 backend. Works for any browser. Delivers the information needed for the
 calculations (browser window's dimentions and device's pixel ratio) via a
-cookie.
+cookie. Supports only Paperclip attachments.
 
 Example usage:
 
@@ -29,6 +29,22 @@ Set the following variables in an app initializer:
 
 - `Artwork.supported_resolutions_list`
 - `Artwork.default_resolution`
+
+Name your Paperclip attachment styles using the following convention:
+
+    :'320x'
+    :'320x_2x'
+    :'320x_some_label'
+    :'320x_some_label_2x'
+    :'320x500'
+    :'320x500_2x'
+    :'320x500_crop'
+    :'320x500_crop_2x'
+    :'320x500_black_and_white_crop'
+    :'320x500_black_and_white_crop_2x'
+
+The artwork methods will recognize and work with these styles. All other naming
+conventions will be ignored and will bypass the artwork auto-sizing logic.
 
 ## Usage Example
 
