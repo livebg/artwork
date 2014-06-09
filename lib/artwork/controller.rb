@@ -3,6 +3,7 @@ module Artwork
     def self.included(controller)
       controller.class_eval do
         around_filter :initialize_artwork_env
+        helper View
       end
     end
 
