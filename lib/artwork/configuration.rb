@@ -1,7 +1,7 @@
 module Artwork
   module Configuration
     def supported_resolutions_list
-      get_reqired :supported_resolutions_list
+      get_required :supported_resolutions_list
     end
 
     def supported_resolutions_list=(resolutions)
