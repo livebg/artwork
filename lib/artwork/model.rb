@@ -10,8 +10,9 @@ module Artwork
         desired_size = size.to_i / ratio_for_current_resolution
 
         available_attachments = attachment_styles_for(attachment_name) \
+          .map(&:to_s) \
           .grep(THUMBNAIL_NAME_PATTERN) \
-          .sort_by { |name| name.to_s.to_i }
+          .sort_by(&:to_i)
 
         available_attachments.each do |style_name|
           style_width = style_name.to_s.to_i
@@ -34,7 +35,7 @@ module Artwork
         matching_thumb_name = :"#{matching_thumb_name}_2x"
       end
 
-      matching_thumb_name
+      matching_thumb_name.to_sym
     end
 
     def artwork_url(attachment_name, size, options = {})
