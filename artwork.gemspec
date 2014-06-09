@@ -22,4 +22,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake'
 
   spec.add_dependency 'rails', '>= 2.3'
+  spec.add_dependency 'paperclip', '>= 2.3'
 end
