@@ -30,11 +30,19 @@ Set the following variables in an app initializer:
 - `Artwork.supported_resolutions_list`
 - `Artwork.default_resolution`
 
-## Usage
+## Usage Example
 
-Add `Artwork::ViewHelper` to your view helpers.
+Configure the gem by putting the following code in `config/initializers/artwork.rb`:
 
-Include `Artwork::Model` in your models.
+    Artwork.default_resolution = 1440
+    Artwork.supported_resolutions_list = [1024, 1280, 1440, 1600, 1920, 2048, 3200, 3840]
+
+Include `Artwork::Model` in your models which have artworks.
+
+Include `Artwork::Model` in your `ApplicationController` or wherever you want
+to have the artwork functionality.
+
+Then use `Artwork.load_2x_images?` and `Artwork.current_resolution`.
 
 ## Contributing
 
