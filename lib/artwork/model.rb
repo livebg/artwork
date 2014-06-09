@@ -9,8 +9,8 @@ module Artwork
       if size =~ THUMBNAIL_NAME_PATTERN
         desired_size = size.to_i / ratio_for_current_resolution
 
-        available_attachments = attachment_styles_for(attachment_name)
-          .grep(THUMBNAIL_NAME_PATTERN)
+        available_attachments = attachment_styles_for(attachment_name) \
+          .grep(THUMBNAIL_NAME_PATTERN) \
           .sort_by { |name| name.to_s.to_i }
 
         available_attachments.each do |style_name|
