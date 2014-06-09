@@ -1,6 +1,6 @@
 module Artwork
   module Model
-    THUMBNAIL_NAME_PATTERN = /^[0-9]+x(\w+?)?(_2x)?$/i.freeze
+    THUMBNAIL_NAME_PATTERN = /^[0-9]+x(\w*?)(_2x)?$/i.freeze
 
     def artwork_thumb_for(attachment_name, size)
       size = size.to_s
@@ -9,16 +9,26 @@ module Artwork
       if size =~ THUMBNAIL_NAME_PATTERN
         desired_size = size.to_i / ratio_for_current_resolution
 
-        available_attachments = attachment_styles_for(attachment_name) \
-          .map(&:to_s) \
-          .grep(THUMBNAIL_NAME_PATTERN) \
-          .sort_by(&:to_i)
+        available_attachments = []
 
-        available_attachments.each do |style_name|
-          style_width = style_name.to_s.to_i
+        # Pick attachments which follow our naming conventions, skipping retina images
+        attachment_styles_for(attachment_name).each do |thumb_name|
+          if thumb_name.to_s =~ THUMBNAIL_NAME_PATTERN
+            is_retina   = $2
+            thumb_width = thumb_name.to_s.to_i
 
-          if desired_size <= style_width
-            matching_thumb_name = style_name
+            available_attachments << [thumb_name, thumb_width] unless is_retina
+          end
+        end
+
+        # Sort attachments by width, in ascending order
+        available_attachments = available_attachments.sort_by do |thumb_name, thumb_width|
+          thumb_width
+        end
+
+        available_attachments.each do |thumb_name, thumb_width|
+          if desired_size <= thumb_width
+            matching_thumb_name = thumb_name
             break
           end
         end
@@ -26,7 +36,7 @@ module Artwork
         # If we did not find any matching attachment definitions,
         # the desired size is probably larger than all of our thumb widths,
         # So pick the last (largest) one we have.
-        matching_thumb_name ||= available_attachments.last
+        matching_thumb_name ||= available_attachments.last.first
       end
 
       matching_thumb_name ||= size.to_sym
