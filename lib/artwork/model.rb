@@ -37,28 +37,9 @@ module Artwork
       matching_thumb_name
     end
 
-    def artwork_url(attachment_name = '', size = '', options = {})
-      size = size.to_s
-
-      # Fallback to poster_url or image_url if available and required size not like new schema (eg. 320x, 320x_2x)
-      return poster_url(size) if respond_to?(:poster_url) && size !~ ARTWORK_THUMBNAIL_NAME_PATTERN
-
+    def artwork_url(attachment_name, size, options = {})
       thumb_name = artwork_thumb_for(attachment_name, size)
-
-      raw_artwork_url(attachment_name, thumb_name, options)
-    end
-
-    def raw_artwork_url(attachment_name, size, options = {})
-      path = artwork_path attachment_name, size, options
-
-      # TODO: fix/remove
-      ContentDistributionHelper.url options.reverse_merge(:self => self, :zone => 'updates', :path => "/#{path}")
-    end
-
-    def artwork_path(attachment_name, size, options = {})
-      custom_attachment_path Paperclip::Attachment.new(attachment_name,''), size, options
-    rescue ArgumentError
-      custom_attachment_path Paperclip::Attachment.new(attachment_name,''), size
+      send(attachment_name).url(size, options)
     end
 
     def attachment_styles_for(attachment_name)
