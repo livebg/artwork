@@ -87,8 +87,8 @@ Configure the gem by putting the following code in `config/initializers/artwork.
 
 Include `Artwork::Model` in your models which have artworks.
 
-Include `Artwork::Model` in your `ApplicationController` or wherever you want
-to have the artwork functionality.
+Include `Artwork::Controller` in your `ApplicationController` or wherever you
+want to have the artwork functionality.
 
 Then you can use `Artwork.load_2x_images?`, `Artwork.current_resolution` and
 the `artwork_tag` view helper. Example:
