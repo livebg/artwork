@@ -11,6 +11,7 @@ module Artwork
 
     def initialize_artwork_env
       Artwork.configure_for request
+      yield
     ensure
       Artwork.reset_configuration
     end
