@@ -1,13 +1,33 @@
 # Artwork
 
-Automated image size scaling view helpers for your frontend, but done in the
-backend. Works for any browser. Delivers the information needed for the
-calculations (browser window's dimentions and device's pixel ratio) via a
+Automated user-resolution-based image size choosing for your Rails views, but
+done at the backend. Works for any browser. Delivers the information needed for
+the calculations (browser window's dimentions and device's pixel ratio) via a
 cookie. Supports only Paperclip attachments.
 
-Example usage:
+## An example
 
-    <%= artwork_tag person, :avatar, '100x' %>
+Say you've declared a default (base) resolution of 1440px. You design based on
+that resolution. You want to show the user an image which is half of the width
+of the user's browser. You then add the following to your view:
+
+    <%= artwork_tag @post, :cover_image, '720x' %>
+
+Say you have the following image thumbs prepared (defined with imagemagick
+geometry strings):
+
+    256x>
+    512x>
+    1024x>
+    2048x>
+
+Let's also assume a user with a full HD screen opens your page (1920x1080).
+Then, `artwork_tag` will look for a 960px wide image (which is 50% of 1920px).
+You don't have that exact size on the server, so the helper will choose the
+1024px-wide version of the image.
+
+If the user's screen is retina (ie. with a device-to-pixel ratio > 1.0) and if
+you have a _2x versions of your thumbs, the helper will choose the _2x one.
 
 ## Installation
 
