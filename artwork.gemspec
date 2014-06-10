@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Artwork::VERSION
   spec.authors       = ['Dimitar Dimitrov']
   spec.email         = ['dimitar@live.bg']
-  spec.summary       = 'Automated image size scaling view helpers.'
-  spec.description   = 'Works for any browser and uses cookies for transporting browser info to the backend.'
-  spec.homepage      = ''
+  spec.summary       = 'Automated user resolution based image size choosing for Rails.'
+  spec.description   = 'Automated user resolution based image size choosing for your Rails views, but done at the backend.'
+  spec.homepage      = 'https://github.com/mitio/artwork'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
