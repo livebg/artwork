@@ -31,6 +31,13 @@ You don't have that exact size on the server, so the helper will choose the
 If the user's screen is retina (ie. with a device-to-pixel ratio > 1.0) and if
 you have a _2x versions of your thumbs, the helper will choose the _2x one.
 
+## Requirements
+
+- Rails 2.3 or newer
+- Paperclip 2.3 or newer
+- jQuery
+- The jQuery.cookie plugin
+
 ## Installation
 
 Add this line to your application's Gemfile:
