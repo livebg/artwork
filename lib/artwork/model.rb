@@ -50,7 +50,7 @@ module Artwork
 
     def artwork_url(attachment_name, size, options = {})
       thumb_name = artwork_thumb_for(attachment_name, size)
-      send(attachment_name).url(size, options)
+      send(attachment_name).url(thumb_name, options)
     end
 
     def attachment_styles_for(attachment_name)
