@@ -5,6 +5,8 @@ done at the backend. Works for any browser. Delivers the information needed for
 the calculations (browser window's dimentions and device's pixel ratio) via a
 cookie. Supports only Paperclip attachments.
 
+The gem should be thread-safe and should work with Rails 2.3 or newer.
+
 ## An example
 
 Say you've declared a default (base) resolution of 1440px. You design based on
