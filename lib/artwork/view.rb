@@ -2,10 +2,7 @@ module Artwork
   module View
     def activate_resolution_independence
       content_tag :script do
-        Thread.current[:artwork_script] ||= begin
-          artwork_script_path = Artwork.root_path + '/assets/javascripts/artwork.js'
-          Uglifier.compile(File.read(artwork_script_path)).html_safe
-        end
+        Thread.current[:artwork_script] ||= compile_artwork_script
       end
     end
 
@@ -41,6 +38,17 @@ module Artwork
         record.title
       elsif record.respond_to? :name
         record.name
+      end
+    end
+
+    def compile_artwork_script
+      artwork_script_path = Artwork.root_path + '/assets/javascripts/artwork.js'
+      compiled_script     = Uglifier.compile(File.read(artwork_script_path))
+
+      if compiled_script.respond_to?(:html_safe)
+        compiled_script.html_safe
+      else
+        compiled_script
       end
     end
   end
