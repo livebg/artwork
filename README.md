@@ -36,12 +36,17 @@ you have a _2x versions of your thumbs, the helper will choose the _2x one.
 - Ruby 1.8.7 or newer
 - Rails 2.3 or newer
 - Paperclip 2.3 or newer
+- A JavaScript runtime
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add these lines to your application's Gemfile:
 
     gem 'artwork'
+    gem 'therubyracer'
+
+You can skip `therubyracer` if you have other JavaScript environments available
+on your machine (including on the prodiction one).
 
 And then execute:
 
