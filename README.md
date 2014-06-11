@@ -33,10 +33,9 @@ you have a _2x versions of your thumbs, the helper will choose the _2x one.
 
 ## Requirements
 
+- Ruby 1.8.7 or newer
 - Rails 2.3 or newer
 - Paperclip 2.3 or newer
-- jQuery
-- The jQuery.cookie plugin
 
 ## Installation
 

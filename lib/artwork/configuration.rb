@@ -57,11 +57,11 @@ module Artwork
     end
 
     def fetch_2x_images_flag_from(request)
-      request.cookies['_load2ximgs'].to_i > 0
+      request.cookies['_retina'].to_i > 0
     end
 
     def current_resolution_from(request)
-      browser_width = request.cookies['_bSize'].to_i
+      browser_width = request.cookies['_width'].to_i
 
       return default_resolution if browser_width.zero?
 
