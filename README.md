@@ -51,17 +51,9 @@ Or install it yourself as:
 
     $ gem install artwork
 
-Add the following in your `application.js` manifest:
+Add the following line at the top of your `<head>` section:
 
-    //= require artwork
-
-If you're using an older version of Rails which does not support the asset
-pipeline, run the following command from within the app to copy the necessary
-asset files in your `public/` folder first:
-
-    ./script/generate artwork_assets
-
-And then manually include them with `javascript_include_tag` in your layout(s).
+    <%= activate_resolution_independence %>
 
 ## Configuration
 

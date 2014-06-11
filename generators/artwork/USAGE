@@ -1,7 +1,0 @@
-Usage:
-
-  script/generate artwork_assets
-
-Copy the necessary artwork static files to your public directory. Use only with
-Rails versions without the Asset pipeline. For Rails 3.1 and newer the assets
-are available via the pipeline.
