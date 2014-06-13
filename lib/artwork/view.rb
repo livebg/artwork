@@ -1,9 +1,7 @@
 module Artwork
   module View
     def activate_resolution_independence
-      content_tag :script do
-        Thread.current[:artwork_script] ||= compile_artwork_script
-      end
+      Thread.current[:artwork_script] ||= content_tag :script, compile_artwork_script
     end
 
     def artwork_tag(record, attachment_name, size, options = {})
