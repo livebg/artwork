@@ -11,16 +11,19 @@ module Artwork
           :styles => {
             :'320x'               => '320x>',
             :'320x_2x'            => '640x>',
-            :'640x'               => '640x>',
             :'640x_2x'            => '1280x>',
+            :'640x'               => '640x>',
             :'1280x'              => '1280x>',
             :'1280x_2x'           => '2560x>',
+            :'2000x'              => '2000x>',
+            :'1500x_2x'            => '3000x>',
             :'320x_some_label'    => '320x>',
             :'320x_some_label_2x' => '640x>',
             :'320x500'            => '320x500>',
             :'320x500_2x'         => '640x1000>',
             :'320x500_crop'       => '320x500#',
             :'320x500_crop_2x'    => '640x1000#',
+            :unsupported          => '100x100>'
           },
         },
       })
@@ -31,16 +34,19 @@ module Artwork
         expect(instance.attachment_styles_for(:image)).to match_array [
           :'320x',
           :'320x_2x',
-          :'640x',
           :'640x_2x',
+          :'640x',
           :'1280x',
           :'1280x_2x',
+          :'2000x',
+          :'1500x_2x',
           :'320x_some_label',
           :'320x_some_label_2x',
           :'320x500',
           :'320x500_2x',
           :'320x500_crop',
           :'320x500_crop_2x',
+          :unsupported,
         ]
       end
     end
@@ -55,6 +61,75 @@ module Artwork
 
         expect(instance.artwork_url(:photo, :size, 'options')).to eq 'some/url'
       end
+    end
+
+    describe '#artwork_thumb_for' do
+      before :each do
+        Artwork.default_resolution = 1000
+        Artwork.current_resolution = 1000
+        Artwork.load_2x_images     = false
+      end
+
+      def expect_thumb(size, expected)
+        expect(instance.artwork_thumb_for(:image, size)).to eq expected
+      end
+
+      it 'picks the exact requested size if it exists' do
+        expect_thumb '2000x', :'2000x'
+      end
+
+      it 'accepts sizes passed as both a symbol or a string' do
+        expect_thumb '2000x', :'2000x'
+        expect_thumb :'2000x', :'2000x'
+      end
+
+      it 'scales the required size according to current_resolution' do
+        Artwork.default_resolution = 1000
+        Artwork.current_resolution = 2000
+
+        expect_thumb '1000x', :'2000x'
+        expect_thumb '640x',  :'1280x'
+      end
+
+      it 'ignores the retina thumbs when looking for a given size' do
+        expect_thumb '1500x', :'2000x'
+      end
+
+      it 'uses the _2x thumb for retina screens' do
+        Artwork.load_2x_images = true
+        expect_thumb '640x', :'640x_2x'
+        expect_thumb '640x', :'640x_2x'
+      end
+
+      it 'uses the non-retina thumb for retina screens if no _2x thumb is available' do
+        Artwork.load_2x_images = true
+        expect_thumb '2000x', :'2000x'
+      end
+
+      it 'passes through unsupported thumb names' do
+        expect_thumb 'unsupported', :unsupported
+
+        Artwork.load_2x_images     = true
+        Artwork.default_resolution = 1000
+        Artwork.current_resolution = 5000
+
+        expect_thumb 'unsupported', :unsupported
+      end
+
+      it 'picks the nearest non-retina size to our desizred size' do
+        expect_thumb '400x', :'640x'
+      end
+
+      it 'picks the largest available size if requesting a too large thumb' do
+        expect_thumb '5000x', :'2000x'
+      end
+
+      xit 'picks the smallest available size if requesting a too small thumb' do
+        expect_thumb '100x', :'320x'
+      end
+
+      it 'distinguishes thumbs by the supplied text label'
+      it 'distinguishes thumbs by the supplied numerical label, as a vertical height'
     end
   end
 end
