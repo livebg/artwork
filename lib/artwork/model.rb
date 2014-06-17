@@ -1,52 +1,22 @@
+require 'artwork/thumbnail'
+
 module Artwork
   module Model
-    THUMBNAIL_NAME_PATTERN = /^(\d+)x(\w*?)(_2x)?$/i.freeze
-
-    class Thumb
-      include Comparable
-
-      attr :name
-      attr :width
-      attr :label
-
-      def initialize(name)
-        @name = name.to_s
-
-        if @name =~ THUMBNAIL_NAME_PATTERN
-          @width       = $1.to_i
-          @label       = $2.to_s
-          @retina_flag = $3
-        end
-      end
-
-      def compatible?
-        not width.nil?
-      end
-
-      def retina?
-        @retina_flag == '_2x'
-      end
-
-      def <=>(other_thumb)
-        width <=> other_thumb.width
-      end
-    end
-
     def artwork_thumb_for(attachment_name, size)
-      size = size.to_s
+      desired_thumb = Thumbnail.new(size)
       matching_thumb_name = nil
 
-      if size =~ THUMBNAIL_NAME_PATTERN
-        desired_size = size.to_i / ratio_for_current_resolution
+      if desired_thumb.compatible?
+        desired_size = desired_thumb.width / ratio_for_current_resolution
 
         thumbs = attachment_styles_for(attachment_name) \
-          .map { |thumb_name| Thumb.new(thumb_name) } \
+          .map { |thumb_name| Thumbnail.new(thumb_name) } \
           .select(&:compatible?) \
           .reject(&:retina?) \
           .sort
 
         thumbs.each do |thumb|
-          if desired_size <= thumb.width
+          if desired_size <= thumb.width and thumb.label == desired_thumb.label
             matching_thumb_name = thumb.name
             break
           end
@@ -67,7 +37,7 @@ module Artwork
       matching_thumb_name.to_sym
     end
 
-    def artwork_url(attachment_name, size, options = {})
+    def artwork_url(attachment_name, size, options = nil)
       thumb_name = artwork_thumb_for(attachment_name, size)
       send(attachment_name).url(thumb_name, options)
     end

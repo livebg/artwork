@@ -16,7 +16,7 @@ module Artwork
             :'1280x'              => '1280x>',
             :'1280x_2x'           => '2560x>',
             :'2000x'              => '2000x>',
-            :'1500x_2x'            => '3000x>',
+            :'1500x_2x'           => '3000x>',
             :'320x_some_label'    => '320x>',
             :'320x_some_label_2x' => '640x>',
             :'320x500'            => '320x500>',
@@ -60,6 +60,26 @@ module Artwork
         expect(instance).to receive(:photo).and_return(attachment)
 
         expect(instance.artwork_url(:photo, :size, 'options')).to eq 'some/url'
+      end
+
+      it 'works with two arguments and a hash options' do
+        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size).and_return(:computed_size)
+
+        attachment = double
+        expect(attachment).to receive(:url).with(:computed_size, :some => 'options').and_return 'some/url'
+        expect(instance).to receive(:photo).and_return(attachment)
+
+        expect(instance.artwork_url(:photo, :size, :some => 'options')).to eq 'some/url'
+      end
+
+      it 'works with two arguments only without any options hash' do
+        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size).and_return(:computed_size)
+
+        attachment = double
+        expect(attachment).to receive(:url).with(:computed_size, nil).and_return 'some/url'
+        expect(instance).to receive(:photo).and_return(attachment)
+
+        expect(instance.artwork_url(:photo, :size)).to eq 'some/url'
       end
     end
 
@@ -124,12 +144,27 @@ module Artwork
         expect_thumb '5000x', :'2000x'
       end
 
-      xit 'picks the smallest available size if requesting a too small thumb' do
+      it 'picks the smallest available size if requesting a too small thumb' do
         expect_thumb '100x', :'320x'
       end
 
-      it 'distinguishes thumbs by the supplied text label'
-      it 'distinguishes thumbs by the supplied numerical label, as a vertical height'
+      it 'distinguishes thumbs by the supplied text label' do
+        expect_thumb '320x', :'320x'
+        expect_thumb '320x_some_label', :'320x_some_label'
+        expect_thumb '200x_some_label', :'320x_some_label'
+      end
+
+      it 'distinguishes thumbs by the supplied numerical label, as a vertical height' do
+        expect_thumb :'200x500', :'320x500'
+        Artwork.load_2x_images = true
+        expect_thumb :'200x500', :'320x500_2x'
+      end
+
+      it 'distinguishes thumbs by the supplied numerical label ignoring retina flags' do
+        expect_thumb :'200x500_2x', :'320x500'
+        Artwork.load_2x_images = true
+        expect_thumb :'200x500_2x', :'320x500_2x'
+      end
     end
   end
 end
