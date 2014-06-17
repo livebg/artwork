@@ -40,7 +40,7 @@ module Artwork
     alias == eq
 
     def self.compatible?(name)
-      name =~ NAME_PATTERN
+      name.to_s =~ NAME_PATTERN ? true : false
     end
   end
 end

@@ -31,6 +31,11 @@ module Artwork
           expect(thumbnail.send(field_name)).to eq expected_value
         end
       end
+
+      compatible = expected_properties[:compatible?]
+      it "compatible? is true for #{thumb_name.inspect}" do
+        expect(Thumbnail.compatible?(thumb_name)).to eq compatible
+      end
     end
 
     describe '#eq' do
@@ -49,15 +54,17 @@ module Artwork
       end
     end
 
-    it 'can be compared by size' do
-      small  = Thumbnail.new('90x_crop')
-      medium = Thumbnail.new('500x_crop')
-      large  = Thumbnail.new('1090x_2x')
-      huge   = Thumbnail.new('3200x')
+    describe 'comparison' do
+      it 'is based on the thumb width' do
+        small  = Thumbnail.new('90x_crop')
+        medium = Thumbnail.new('500x_crop')
+        large  = Thumbnail.new('1090x_2x')
+        huge   = Thumbnail.new('3200x')
 
-      unsorted = [huge, large, small, medium]
+        unsorted = [huge, large, small, medium]
 
-      expect(unsorted.sort).to eq [small, medium, large, huge]
+        expect(unsorted.sort).to eq [small, medium, large, huge]
+      end
     end
   end
 end
