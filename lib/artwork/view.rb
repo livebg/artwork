@@ -1,3 +1,5 @@
+require 'uglifier'
+
 module Artwork
   module View
     def activate_resolution_independence
