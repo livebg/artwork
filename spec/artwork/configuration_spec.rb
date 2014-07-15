@@ -5,19 +5,59 @@ module Artwork
     let(:config) { Class.new { extend Configuration } }
 
     before :each do
-      thread_variables = {}
-      allow(Thread).to receive(:current) { thread_variables }
+      [
+        :default_resolution, :supported_resolutions_list,
+        :current_resolution, :load_2x_images
+      ].each do |key|
+
+        Thread.current[key] = nil
+
+      end
     end
 
     [:default_resolution, :supported_resolutions_list].each do |option_name|
       describe "##{option_name}" do
+        let(:default_value) { option_name == :supported_resolutions_list ? [1440] : 1440 }
+        let(:custom_value) { option_name == :supported_resolutions_list ? [1024] : 1024 }
+
         it 'raises an error if not set' do
           expect { config.send(option_name) }.to raise_error
         end
 
-        it 'uses Thread.current to store values' do
-          expect(Thread).to receive(:current).and_return(option_name => 'value')
-          expect(config.send(option_name)).to eq 'value'
+        it 'can be initialized with default value' do
+          setter = ->(value) { config.send("#{option_name}=", value) }
+          getter = -> { config.send(option_name) }
+
+          Thread.new { setter.call(default_value) }.join
+
+          expect(getter.call).to eq default_value
+
+          Thread.new do
+            expect(getter.call).to eq default_value
+
+            setter.call(custom_value)
+
+            expect(getter.call).to eq custom_value
+          end.join
+
+          expect(getter.call).to eq default_value
+        end
+
+        it 'does not allow editing of the default value' do
+          setter = ->(value) { config.send("#{option_name}=", value) }
+          getter = -> { config.send(option_name) }
+
+          setter.call default_value
+
+          expect(getter.call).to eq default_value
+
+          setter.call custom_value
+
+          expect(getter.call).to eq custom_value
+
+          Thread.new do
+            expect(getter.call).to eq default_value
+          end.join
         end
       end
     end

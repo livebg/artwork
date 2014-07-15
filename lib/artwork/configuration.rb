@@ -1,18 +1,22 @@
 module Artwork
   module Configuration
     def supported_resolutions_list
-      get_required :supported_resolutions_list
+      get(:supported_resolutions_list) or @@supported_resolutions_list or raise "Please set #{__method__}"
     end
 
     def supported_resolutions_list=(resolutions)
-      set :supported_resolutions_list, resolutions.map(&:to_i).sort
+      list = resolutions.map(&:to_i).sort
+
+      @@supported_resolutions_list ||= list
+      set :supported_resolutions_list, list
     end
 
     def default_resolution
-      get_required :default_resolution
+      get(:default_resolution) or @@default_resolution or raise "Please set #{__method__}"
     end
 
     def default_resolution=(resolution)
+      @@default_resolution ||= resolution
       set :default_resolution, resolution
     end
 
@@ -50,10 +54,6 @@ module Artwork
 
     def get(setting)
       Thread.current[setting]
-    end
-
-    def get_required(setting)
-      get(setting) or raise "Please set #{name}.#{setting}"
     end
 
     def fetch_2x_images_flag_from(request)
