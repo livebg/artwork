@@ -32,6 +32,12 @@ module Artwork
       @retina_flag == '_2x'
     end
 
+    def same_aspect_ratio?(other_thumb)
+      return unless aspect_ratio and other_thumb.aspect_ratio
+
+      (0.0..0.1).include? (aspect_ratio - other_thumb.aspect_ratio).abs
+    end
+
     def <=>(other_thumb)
       width <=> other_thumb.width
     end
