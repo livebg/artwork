@@ -126,8 +126,8 @@ For a thumb to be returned as matching, all of the following must be true:
 - If the requested thumb has a label (including a blank one, like in `400x_`),
   the thumb must match the requested label.
 - If the requested thumb specifies an aspect ratio, the matching thumb must
-  have the same aspect ratio, rounded to the second decimal. If no aspect ratio
-  is specified in the request, aspect ratio checks will not be performed.
+  have the same aspect ratio, within a delta of 0.1. If no aspect ratio is
+  specified in the request, aspect ratio checks will not be performed.
 - If the current device is a retina device, a retina thumb will be preferred.
   If no retuna thumb exists, a non-retina one will be selected.
 
