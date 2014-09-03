@@ -75,21 +75,21 @@ module Artwork
       end
     end
 
-    describe '#same_aspect_ratio?' do
+    describe '#same_aspect_ratio_with?' do
       it 'returns nil if either thumbs have no clear height' do
-        expect(Thumbnail.new('400x300').same_aspect_ratio?(Thumbnail.new('400x'))).to be_nil
-        expect(Thumbnail.new('400x0').same_aspect_ratio?(Thumbnail.new('400x300'))).to be_nil
+        expect(Thumbnail.new('400x300').same_aspect_ratio_with?(Thumbnail.new('400x'))).to be_nil
+        expect(Thumbnail.new('400x0').same_aspect_ratio_with?(Thumbnail.new('400x300'))).to be_nil
       end
 
       it 'returns true if thumbs have aspect ratios within 0.1 of one another' do
-        expect(Thumbnail.new('400x300').same_aspect_ratio?(Thumbnail.new('400x300'))).to be true
-        expect(Thumbnail.new('400x300').same_aspect_ratio?(Thumbnail.new('1600x1200_with_label_2x'))).to be true
-        expect(Thumbnail.new('400x300').same_aspect_ratio?(Thumbnail.new('400x301'))).to be true
+        expect(Thumbnail.new('400x300').same_aspect_ratio_with?(Thumbnail.new('400x300'))).to be true
+        expect(Thumbnail.new('400x300').same_aspect_ratio_with?(Thumbnail.new('1600x1200_with_label_2x'))).to be true
+        expect(Thumbnail.new('400x300').same_aspect_ratio_with?(Thumbnail.new('400x301'))).to be true
       end
 
       it 'returns false if thumbs have different aspect ratios not within 0.1 of one another' do
-        expect(Thumbnail.new('400x300').same_aspect_ratio?(Thumbnail.new('400x200'))).to be false
-        expect(Thumbnail.new('400x300').same_aspect_ratio?(Thumbnail.new('5x10'))).to be false
+        expect(Thumbnail.new('400x300').same_aspect_ratio_with?(Thumbnail.new('400x200'))).to be false
+        expect(Thumbnail.new('400x300').same_aspect_ratio_with?(Thumbnail.new('5x10'))).to be false
       end
     end
 
