@@ -153,18 +153,6 @@ module Artwork
         expect_thumb '320x_some_label', :'320x_some_label'
         expect_thumb '200x_some_label', :'320x_some_label'
       end
-
-      xit 'distinguishes thumbs by the supplied numerical label, as a vertical height' do
-        expect_thumb :'200x500', :'320x500'
-        Artwork.load_2x_images = true
-        expect_thumb :'200x500', :'320x500_2x'
-      end
-
-      xit 'distinguishes thumbs by the supplied numerical label ignoring retina flags' do
-        expect_thumb :'200x500_2x', :'320x500'
-        Artwork.load_2x_images = true
-        expect_thumb :'200x500_2x', :'320x500_2x'
-      end
     end
   end
 end
