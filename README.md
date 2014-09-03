@@ -107,8 +107,8 @@ The following criteria are taken into account for picking up the appropriate
 thumb name:
 
 - The `default_resolution` specified in the Artwork configuration file.
-- The current resolition, approximated to the nearest largest supported
-  resolution.
+- The current resolition, approximated to the nearest supported resolution
+  which is larger than the current user's one.
 - Whether or not the screen is retina.
 - The width of the requested thumb size (e.g. `400` for `400x300_crop`).
 - The label of the requested thumb (e.g. `crop` for `400x300_crop`); the label
@@ -121,7 +121,7 @@ thumb name:
 
 For a thumb to be returned as matching, all of the following must be true:
 
-- It must me the smallest thumb which is still larger than the requested width,
+- It must be the smallest thumb which is still larger than the requested width,
   scaled for the current resolution.
 - If the requested thumb has a label (including a blank one, like in `400x_`),
   the thumb must match the requested label.
