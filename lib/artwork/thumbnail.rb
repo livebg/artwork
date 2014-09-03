@@ -2,7 +2,7 @@ module Artwork
   class Thumbnail
     include Comparable
 
-    NAME_PATTERN = /^(\d+)x(\d+)?((?!_2x)_\w+?)?(_2x)?$/i.freeze
+    NAME_PATTERN = /^(\d+)x(\d+)?((?!_2x)_\w*?)?(_2x)?$/i.freeze
 
     attr :name
     attr :width
@@ -16,7 +16,7 @@ module Artwork
       if match = @name.match(NAME_PATTERN)
         @width       = match[1].to_i
         @height      = match[2].to_i
-        @label       = match[3].to_s.gsub(/^_|_$/, '')
+        @label       = match[3] ? match[3].gsub(/^_|_$/, '') : nil
         @retina_flag = match[4]
       end
 
