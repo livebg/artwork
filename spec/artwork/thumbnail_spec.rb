@@ -5,20 +5,20 @@ module Artwork
     expected_defaults = {:compatible? => true}
 
     examples = {
-      :'320x'               => {:width => 320,  :retina? => false, :label => ''},
-      :'320x_2x'            => {:width => 320,  :retina? => true,  :label => ''},
-      :'640x_2x'            => {:width => 640,  :retina? => true,  :label => ''},
-      :'640x'               => {:width => 640,  :retina? => false, :label => ''},
-      :'1280x'              => {:width => 1280, :retina? => false, :label => ''},
-      :'1280x_2x'           => {:width => 1280, :retina? => true,  :label => ''},
-      :'2000x'              => {:width => 2000, :retina? => false, :label => ''},
-      :'1500x_2x'           => {:width => 1500, :retina? => true,  :label => ''},
-      :'320x_some_label'    => {:width => 320,  :retina? => false, :label => 'some_label'},
-      :'320x_some_label_2x' => {:width => 320,  :retina? => true,  :label => 'some_label'},
-      :'320x500'            => {:width => 320,  :retina? => false, :label => '500'},
-      :'320x500_2x'         => {:width => 320,  :retina? => true,  :label => '500'},
-      :'320x500_crop'       => {:width => 320,  :retina? => false, :label => '500_crop'},
-      :'320x500_crop_2x'    => {:width => 320,  :retina? => true,  :label => '500_crop'},
+      :'320x'               => {:width => 320,  :height => nil, :retina? => false, :label => ''},
+      :'320x_2x'            => {:width => 320,  :height => nil, :retina? => true,  :label => ''},
+      :'640x_2x'            => {:width => 640,  :height => nil, :retina? => true,  :label => ''},
+      :'640x'               => {:width => 640,  :height => nil, :retina? => false, :label => ''},
+      :'1280x'              => {:width => 1280, :height => nil, :retina? => false, :label => ''},
+      :'1280x_2x'           => {:width => 1280, :height => nil, :retina? => true,  :label => ''},
+      :'2000x'              => {:width => 2000, :height => nil, :retina? => false, :label => ''},
+      :'1500x_2x'           => {:width => 1500, :height => nil, :retina? => true,  :label => ''},
+      :'320x_some_label'    => {:width => 320,  :height => nil, :retina? => false, :label => 'some_label'},
+      :'320x_some_label_2x' => {:width => 320,  :height => nil, :retina? => true,  :label => 'some_label'},
+      :'320x500'            => {:width => 320,  :height => 500, :retina? => false, :label => ''},
+      :'320x500_2x'         => {:width => 320,  :height => 500, :retina? => true,  :label => ''},
+      :'320x500_crop'       => {:width => 320,  :height => 500, :retina? => false, :label => 'crop'},
+      :'320x500_crop_2x'    => {:width => 320,  :height => 500, :retina? => true,  :label => 'crop'},
       :unsupported          => {:compatible? => false},
       'unsupported_thumb'   => {:compatible? => false},
     }
@@ -39,18 +39,19 @@ module Artwork
     end
 
     describe '#eq' do
-      it 'is true for different objects with the same width, label and retina flag' do
+      it 'is true for different objects with the same width, height, label and retina flag' do
         expect(Thumbnail.new(:'1200x500_crop_2x')).to eq Thumbnail.new('1200x500_crop_2x')
         expect(Thumbnail.new(:'1200x_2x')).to eq Thumbnail.new('1200x_2x')
         expect(Thumbnail.new(:'1200x')).to eq Thumbnail.new('1200x')
         expect(Thumbnail.new(:'1200x_black_and_white')).to eq Thumbnail.new('1200x_black_and_white')
       end
 
-      it 'is false for different objects if any of the width, label or retina flag differ' do
+      it 'is false for different objects if any of the width, height, label or retina flag differ' do
         expect(Thumbnail.new(:'1200x500_crop_2x')).not_to eq Thumbnail.new('1200x500_crop')
         expect(Thumbnail.new(:'1200x500_crop_2x')).not_to eq Thumbnail.new('1200x500crop_2x')
         expect(Thumbnail.new(:'1200x500_crop_2x')).not_to eq Thumbnail.new('1201x500_crop_2x')
         expect(Thumbnail.new(:'1200x500_crop_2x')).not_to eq Thumbnail.new('1500x')
+        expect(Thumbnail.new(:'1200x500_crop_2x')).not_to eq Thumbnail.new('1200x400_crop_2x')
       end
     end
 

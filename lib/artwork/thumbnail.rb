@@ -2,10 +2,11 @@ module Artwork
   class Thumbnail
     include Comparable
 
-    NAME_PATTERN = /^(\d+)x(\w*?)(_2x)?$/i.freeze
+    NAME_PATTERN = /^(\d+)x(\d+)?((?!_2x)_\w+?)?(_2x)?$/i.freeze
 
     attr :name
     attr :width
+    attr :height
     attr :label
 
     def initialize(name)
@@ -13,9 +14,12 @@ module Artwork
 
       if match = @name.match(NAME_PATTERN)
         @width       = match[1].to_i
-        @label       = match[2].to_s.gsub(/^_|_$/, '')
-        @retina_flag = match[3]
+        @height      = match[2].to_i
+        @label       = match[3].to_s.gsub(/^_|_$/, '')
+        @retina_flag = match[4]
       end
+
+      @height = nil if @height == 0
     end
 
     def compatible?
@@ -33,6 +37,7 @@ module Artwork
     def eq(other)
       name    == other.name and \
       width   == other.width and \
+      height  == other.height and \
       label   == other.label and \
       retina? == other.retina?
     end
