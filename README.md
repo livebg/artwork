@@ -101,6 +101,39 @@ the `artwork_tag` view helper. Example:
     <%= artwork_tag @film, :board, :'1440x', :image => {:class => 'poster'} %>
     <%= artwork_tag @gallery, :cover, :'900x' %>
 
+## Thumb Selection Algorithm
+
+The following criteria are taken into account for picking up the appropriate
+thumb name:
+
+- The `default_resolution` specified in the Artwork configuration file.
+- The current resolition, approximated to the nearest largest supported
+  resolution.
+- Whether or not the screen is retina.
+- The width of the requested thumb size (e.g. `400` for `400x300_crop`).
+- The label of the requested thumb (e.g. `crop` for `400x300_crop`); the label
+  will be ignored, if it is not specified, e.g. for `400x300` or `400x`. The
+  label will be locked to a blank one if the request is for a thumb like this:
+  `400x300_`.
+- The aspect ratio of the requested thumb (e.g. `4/3` for `400x300_crop`); the
+  aspect ratio will be ignored if there is no height specified in the requested
+  thumb, e.g. for a request like `400x_crop`.
+
+For a thumb to be returned as matching, all of the following must be true:
+
+- It must me the smallest thumb which is still larger than the requested width,
+  scaled for the current resolution.
+- If the requested thumb has a label (including a blank one, like in `400x_`),
+  the thumb must match the requested label.
+- If the requested thumb specifies an aspect ratio, the matching thumb must
+  have the same aspect ratio, rounded to the second decimal. If no aspect ratio
+  is specified in the request, aspect ratio checks will not be performed.
+- If the current device is a retina device, a retina thumb will be preferred.
+  If no retuna thumb exists, a non-retina one will be selected.
+
+If no such thumb exist, the largest one will match.
+
+
 ## Contributing
 
 1. [Fork it](https://github.com/mitio/artwork/fork)
