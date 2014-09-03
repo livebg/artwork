@@ -55,6 +55,23 @@ module Artwork
       end
     end
 
+    describe '#aspect_ratio' do
+      it 'is nil if height is not present or is zero' do
+        expect(Thumbnail.new('400x_label_2x').aspect_ratio).to be_nil
+        expect(Thumbnail.new('400x_2x').aspect_ratio).to be_nil
+        expect(Thumbnail.new('400x_').aspect_ratio).to be_nil
+        expect(Thumbnail.new('400x').aspect_ratio).to be_nil
+        expect(Thumbnail.new('400x0').aspect_ratio).to be_nil
+      end
+
+      it 'is calculated as a decimal when both a width and a height are present' do
+        expect(Thumbnail.new('400x300').aspect_ratio).to be_within(0.1).of(1.33)
+        expect(Thumbnail.new('1600x900').aspect_ratio).to be_within(0.1).of(1.78)
+        expect(Thumbnail.new('1600x900_with_label').aspect_ratio).to be_within(0.1).of(1.78)
+        expect(Thumbnail.new('1600x900_with_label_2x').aspect_ratio).to be_within(0.1).of(1.78)
+      end
+    end
+
     describe 'comparison' do
       it 'is based on the thumb width' do
         small  = Thumbnail.new('90x_crop')

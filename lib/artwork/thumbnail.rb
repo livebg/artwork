@@ -8,6 +8,7 @@ module Artwork
     attr :width
     attr :height
     attr :label
+    attr :aspect_ratio
 
     def initialize(name)
       @name = name.to_s
@@ -20,6 +21,7 @@ module Artwork
       end
 
       @height = nil if @height == 0
+      @aspect_ratio = @width.to_f / @height if @height
     end
 
     def compatible?
