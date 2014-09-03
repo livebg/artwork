@@ -23,6 +23,9 @@ module Artwork
             :'320x500_2x'         => '640x1000>',
             :'320x500_crop'       => '320x500#',
             :'320x500_crop_2x'    => '640x1000#',
+            :'400x500'            => '400x500>',
+            :'400x500_2x'         => '800x1000>',
+            :'320x_'              => '320x>',
             :unsupported          => '100x100>'
           },
         },
@@ -46,6 +49,9 @@ module Artwork
           :'320x500_2x',
           :'320x500_crop',
           :'320x500_crop_2x',
+          :'400x500',
+          :'400x500_2x',
+          :'320x_',
           :unsupported,
         ]
       end
@@ -137,7 +143,8 @@ module Artwork
       end
 
       it 'picks the nearest non-retina size to our desizred size' do
-        expect_thumb '400x', :'640x'
+        expect_thumb '390x', :'400x500'
+        expect_thumb '420x', :'640x'
       end
 
       it 'picks the largest available size if requesting a too large thumb' do
@@ -152,6 +159,36 @@ module Artwork
         expect_thumb '320x', :'320x'
         expect_thumb '320x_some_label', :'320x_some_label'
         expect_thumb '200x_some_label', :'320x_some_label'
+      end
+
+      it 'considers the aspect ratio of the desired thumb' do
+        expect_thumb '320x499', :'320x500'
+        expect_thumb '319x498', :'320x500'
+        Artwork.load_2x_images = true
+        expect_thumb '319x498', :'320x500_2x'
+        expect_thumb '319x498_crop', :'320x500_crop_2x'
+        Artwork.load_2x_images = false
+        expect_thumb '319x498_crop', :'320x500_crop'
+      end
+
+      it 'returns the largest thumb with the requested label if no other suitable sizes are found' do
+        expect_thumb '20000x_crop', :'320x500_crop'
+        Artwork.load_2x_images = true
+        expect_thumb '20000x_crop', :'320x500_crop_2x'
+      end
+
+      it 'returns the largest thumb with the requested aspect ratio if no other suitable sizes are found' do
+        expect_thumb '8000x10000', :'400x500'
+        Artwork.load_2x_images = true
+        expect_thumb '8000x10000', :'400x500_2x'
+      end
+
+      it 'returns nil if no thumbnail matches the requested aspect ratio' do
+        expect_thumb '319x200', nil
+      end
+
+      it 'returns nil if no thumbnail matches the requested label' do
+        expect_thumb '319x_nonexistant_label', nil
       end
     end
   end

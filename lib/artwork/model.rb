@@ -9,14 +9,17 @@ module Artwork
       if desired_thumb.compatible?
         desired_size = desired_thumb.width / ratio_for_current_resolution
 
-        thumbs = attachment_styles_for(attachment_name) \
-          .map { |thumb_name| Thumbnail.new(thumb_name) } \
+        thumbs = attachment_styles_for(attachment_name).map { |thumb_name| Thumbnail.new(thumb_name) }
+
+        thumbs = thumbs \
           .select(&:compatible?) \
           .reject(&:retina?) \
+          .select { |thumb| desired_thumb.label.nil? or desired_thumb.label == thumb.label.to_s } \
+          .select { |thumb| desired_thumb.aspect_ratio.nil? or desired_thumb.same_aspect_ratio_with?(thumb) } \
           .sort
 
         thumbs.each do |thumb|
-          if desired_size <= thumb.width and thumb.label == desired_thumb.label
+          if desired_size <= thumb.width
             matching_thumb_name = thumb.name
             break
           end
@@ -25,6 +28,7 @@ module Artwork
         # If we did not find any matching attachment definitions,
         # the desired size is probably larger than all of our thumb widths,
         # So pick the last (largest) one we have.
+        return nil if thumbs.empty?
         matching_thumb_name ||= thumbs.last.name
       end
 
