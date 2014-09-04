@@ -82,7 +82,7 @@ module Artwork
         expect(instance).to receive(:artwork_thumb_for).with(:photo, :size).and_return(:computed_size)
 
         attachment = double
-        expect(attachment).to receive(:url).with(:computed_size, nil).and_return 'some/url'
+        expect(attachment).to receive(:url).with(:computed_size, {}).and_return 'some/url'
         expect(instance).to receive(:photo).and_return(attachment)
 
         expect(instance.artwork_url(:photo, :size)).to eq 'some/url'

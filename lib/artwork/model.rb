@@ -41,7 +41,7 @@ module Artwork
       matching_thumb_name.to_sym
     end
 
-    def artwork_url(attachment_name, size, options = nil)
+    def artwork_url(attachment_name, size, options = {})
       thumb_name = artwork_thumb_for(attachment_name, size)
       send(attachment_name).url(thumb_name, options)
     end
