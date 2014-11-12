@@ -60,6 +60,15 @@ Add the following line at the top of your `<head>` section:
 
     <%= activate_resolution_independence %>
 
+This will add a script which will set the cookie with the dimentions and
+reload the current page. If the dimentions need updating, it will do the same thing.
+
+This reloading causes some browsers to display unstyled html,
+so you could prevent this if you add (*ABOVE* the top script):
+
+    <style> .artwork-reload-splash body { display: none; } </style>
+    <%= activate_resolution_independence %>
+
 ## Configuration
 
 Set the following variables in an app initializer:
