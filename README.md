@@ -69,6 +69,18 @@ so you could prevent this if you add (*ABOVE* the top script):
     <style> .artwork-reload-splash body { display: none; } </style>
     <%= activate_resolution_independence %>
 
+### Usage in frames
+
+The client-side code which checks for the current browser's resolutions will be
+disabled by default when the site is not the topmost frame, ie. when loaded from
+an iframe.
+
+You can override this behaviour by setting a truthy value to a global variable:
+
+    window.useArtworkInFrames = true
+
+This has to happen before the `<%= activate_resolution_independence %>` call.
+
 ## Configuration
 
 Set the following variables in an app initializer:
