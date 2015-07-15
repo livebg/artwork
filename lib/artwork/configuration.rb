@@ -32,6 +32,16 @@ module Artwork
       get(:current_resolution) || default_resolution
     end
 
+    def actual_resolution_for(request)
+      browser_width = request.cookies['_width'].to_i
+
+      if browser_width > 0
+        browser_width
+      else
+        default_resolution
+      end
+    end
+
     def current_resolution=(resolution)
       set :current_resolution, resolution
     end
