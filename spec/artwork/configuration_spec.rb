@@ -7,7 +7,8 @@ module Artwork
     before :each do
       [
         :base_resolution, :supported_resolutions_list,
-        :current_resolution, :load_2x_images
+        :current_resolution, :actual_resolution,
+        :load_2x_images,
       ].each do |key|
 
         Thread.current[key] = nil
@@ -83,6 +84,20 @@ module Artwork
       end
     end
 
+    describe '#actual_resolution' do
+      it 'falls back to base_resolution' do
+        expect(config).to receive(:base_resolution).and_return('default')
+        expect(config.actual_resolution).to eq 'default'
+      end
+    end
+
+    describe '#actual_resolution=' do
+      it 'allows setting the current actual resolution' do
+        config.actual_resolution = 12345
+        expect(config.actual_resolution).to eq 12345
+      end
+    end
+
     describe '#reset_configuration' do
       it 'resets the current_resolution' do
         config.current_resolution = 'current'
@@ -109,11 +124,12 @@ module Artwork
         double :cookies => cookies_hash
       end
 
-      it 'sets current_resolution and load_2x_images from request cookies' do
+      it 'sets current_resolution, actual_resolution and load_2x_images from request cookies' do
         config.supported_resolutions_list = [1000, 2000, 3000]
         config.configure_for make_request('_retina' => '1', '_width' => '2000')
 
         expect(config.current_resolution).to eq 2000
+        expect(config.actual_resolution).to eq 2000
         expect(config.load_2x_images?).to eq true
       end
 
@@ -128,17 +144,20 @@ module Artwork
         expect(config.load_2x_images?).to eq true
       end
 
-      it 'picks only from the supported resolutions list' do
+      it 'picks only from the supported resolutions list but stores the actual resolution as well' do
         config.supported_resolutions_list = [1000, 2000, 3000]
 
         config.configure_for make_request('_width' => '1234')
         expect(config.current_resolution).to eq 2000
+        expect(config.actual_resolution).to eq 1234
 
         config.configure_for make_request('_width' => '234')
         expect(config.current_resolution).to eq 1000
+        expect(config.actual_resolution).to eq 234
 
         config.configure_for make_request('_width' => '10234')
         expect(config.current_resolution).to eq 3000
+        expect(config.actual_resolution).to eq 10234
       end
 
       it 'falls back to base_resolution if no _width cookie' do
@@ -148,6 +167,7 @@ module Artwork
         config.configure_for make_request
 
         expect(config.current_resolution).to eq 5000
+        expect(config.actual_resolution).to eq 5000
       end
     end
   end

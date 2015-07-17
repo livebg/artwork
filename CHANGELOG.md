@@ -10,6 +10,7 @@
 
 - Added support for custom base resolutions via the following syntax:
   `<%= artwork_tag @record, :cover, '800x@1200' %>`
+- Added `Artwork.actual_resolution` (set via `Artwork.configure_for(request)`)
 
 ## v0.6.1
 

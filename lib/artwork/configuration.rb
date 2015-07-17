@@ -36,9 +36,18 @@ module Artwork
       set :current_resolution, resolution
     end
 
+    def actual_resolution
+      get(:actual_resolution) || base_resolution
+    end
+
+    def actual_resolution=(resolution)
+      set :actual_resolution, resolution
+    end
+
     def configure_for(request)
       Artwork.load_2x_images     = fetch_2x_images_flag_from(request)
       Artwork.current_resolution = current_resolution_from(request)
+      Artwork.actual_resolution  = actual_resolution_from(request)
     end
 
     def reset_configuration
