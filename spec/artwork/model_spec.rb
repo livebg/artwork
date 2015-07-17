@@ -239,6 +239,13 @@ module Artwork
 
           expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100'}], :'640x'
         end
+
+        it 'ignores non-numeric keys' do
+          Artwork.current_resolution = 1200
+          Artwork.actual_resolution  = 1200
+
+          expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100', :foo => 'bar'}], :'640x'
+        end
       end
     end
   end

@@ -1,3 +1,8 @@
+## v0.7.1
+
+- Hotfix for the new alternative sizes when additional non-numeric option keys
+  are being passed to `artwork_thumb_for()` (such as `auto_height: true`).
+
 ## v0.7.0
 
 **Backwards-incompatible changes**
