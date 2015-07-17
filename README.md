@@ -143,6 +143,28 @@ the `artwork_tag` view helper. Example:
     <%= artwork_tag @film, :board, :'1440x', :image => {:class => 'poster'} %>
     <%= artwork_tag @gallery, :cover, :'900x' %>
 
+### Base (default) resolution
+
+The base resolution defeined by `Artwork.default_resolution` is there to assist
+in development and to make calculating the image width percentage in relation
+to the viewport width easier.
+
+For example, to define a half-width image in a setting where your base
+resolution is 1600 px, you can use:
+
+    <%= artwork_tag @record, :cover, :'800x' %>
+
+In general, it's convenient to set the base resolution to what your dev team's
+screen width is.
+
+### Custom base resolutions
+
+The gem supports per-tag base resolutions via the following syntax:
+
+    <%= artwork_tag @record, :cover, :'800x@1200' %>
+
+This effectively means "size the image as 2/3 of the viewport width".
+
 ## Thumb Selection Algorithm
 
 The following criteria are taken into account for picking up the appropriate

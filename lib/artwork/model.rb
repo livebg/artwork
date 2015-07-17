@@ -3,8 +3,17 @@ require 'artwork/thumbnail'
 module Artwork
   module Model
     def artwork_thumb_for(attachment_name, size)
+      if size.to_s =~ /^(.*)@(\d+)$/
+        base_resolution = $2.to_f
+        size = $1
+      else
+        base_resolution = Artwork.default_resolution.to_f
+      end
+
       desired_thumb = Thumbnail.new(size)
       matching_thumb_name = nil
+
+      ratio_for_current_resolution = base_resolution / Artwork.current_resolution.to_f
 
       if desired_thumb.compatible?
         desired_size = desired_thumb.width / ratio_for_current_resolution
@@ -48,12 +57,6 @@ module Artwork
 
     def attachment_styles_for(attachment_name)
       self.class.attachment_definitions[attachment_name.to_sym][:styles].keys
-    end
-
-    private
-
-    def ratio_for_current_resolution
-      Artwork.default_resolution.to_f / Artwork.current_resolution.to_f
     end
   end
 end

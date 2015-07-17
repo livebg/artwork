@@ -161,6 +161,18 @@ module Artwork
         expect_thumb '200x_some_label', :'320x_some_label'
       end
 
+      it 'allows changing the base resolution per request' do
+        Artwork.current_resolution = 2000
+
+        expect_thumb '320x@320', :'2000x'
+        expect_thumb '320x@640', :'1280x'
+
+        Artwork.current_resolution = 320
+        expect_thumb '320x@320', :'320x'
+        expect_thumb '320x_some_label@320', :'320x_some_label'
+        expect_thumb '200x_some_label@320', :'320x_some_label'
+      end
+
       it 'considers the aspect ratio of the desired thumb' do
         expect_thumb '320x499', :'320x500'
         expect_thumb '319x498', :'320x500'
