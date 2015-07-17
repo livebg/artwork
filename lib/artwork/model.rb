@@ -65,7 +65,7 @@ module Artwork
       new_size_definition = alternative_sizes \
         .select { |key, value| key.is_a? Numeric } \
         .sort_by { |max_resolution, size| max_resolution } \
-        .find { |max_resolution, size| Artwork.actual_resolution <= max_resolution }
+        .find { |max_resolution, size| Artwork.current_resolution <= max_resolution }
 
       new_size_definition.last if new_size_definition
     end

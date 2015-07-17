@@ -207,42 +207,36 @@ module Artwork
       context 'with an alternative sizes definition' do
         it 'ignores alternative sizes if current resolution is above all the max resolutions given' do
           Artwork.current_resolution = 1000
-          Artwork.actual_resolution  = 1000
 
           expect_thumb ['320x', {700 => '100x@100'}], :'320x'
         end
 
         it 'picks the first alternative size if current resolution is smaller than all max resolutions' do
           Artwork.current_resolution = 799
-          Artwork.actual_resolution  = 799
 
           expect_thumb ['320x', {1280 => '500x', 800 => '1000x'}], :'1280x'
         end
 
         it 'picks the first alternative size if current resolution is smaller than all max resolutions and supports custom base resolutions' do
           Artwork.current_resolution = 799
-          Artwork.actual_resolution  = 799
 
           expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100'}], :'1280x'
         end
 
         it 'compares resolutions with <=' do
           Artwork.current_resolution = 800
-          Artwork.actual_resolution  = 800
 
           expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100'}], :'1280x'
         end
 
         it 'picks the largest alternative size if current resolution is smaller only than the max resolution given' do
           Artwork.current_resolution = 1200
-          Artwork.actual_resolution  = 1200
 
           expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100'}], :'640x'
         end
 
         it 'ignores non-numeric keys' do
           Artwork.current_resolution = 1200
-          Artwork.actual_resolution  = 1200
 
           expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100', :foo => 'bar'}], :'640x'
         end

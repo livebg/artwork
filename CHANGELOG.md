@@ -1,3 +1,10 @@
+## v0.7.2
+
+- Use `Artwork.current_resolution` instead of `Artwork.actual_resolution` in
+  `artwork_thumb_for` when evaluating the alternative sizes. This is to allow
+  page and fragment caching where `Artwork.current_resolution` is in the cache
+  key.
+
 ## v0.7.1
 
 - Hotfix for the new alternative sizes when additional non-numeric option keys
