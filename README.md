@@ -165,6 +165,18 @@ The gem supports per-tag base resolutions via the following syntax:
 
 This effectively means "size the image as 2/3 of the viewport width".
 
+### Different image sizes based on different browser widths
+
+There is basic media query-like support built into
+`Artwork::Model.artwork_thumb_for(name, size, alternative_sizes = nil)`.
+
+For example, to request a full width image if the current browser's viewport
+is 480px or less wide, you can use the following code:
+
+```ruby
+<%= artwork_tag @recrod, :cover, '800x', {480 => '320x@320'} %>
+```
+
 ## Thumb Selection Algorithm
 
 The following criteria are taken into account for picking up the appropriate

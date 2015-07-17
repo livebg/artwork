@@ -19,8 +19,32 @@ module Artwork
       end
     end
 
-    it 'defines the artwork_tag helper method' do
-      expect(View.instance_methods.map(&:to_sym)).to include(:artwork_tag)
+    describe '#artwork_tag' do
+      it 'is defined' do
+        expect(View.instance_methods.map(&:to_sym)).to include(:artwork_tag)
+      end
+
+      it 'returns an HTML img tag with the appropriate URL' do
+        record = double
+        expect(record).to receive(:artwork_url).with(:artwork_name, :size, {}).and_return('image_url')
+        allow(view_context).to receive(:content_tag).and_yield
+        expect(view_context).to receive(:image_tag).with('image_url', {:alt => nil}).and_return('image-tag-with-url')
+
+        generated_html = view_context.artwork_tag(record, :artwork_name, :size)
+
+        expect(generated_html).to eq 'image-tag-with-url'
+      end
+
+      it 'passes the options to artwork_url' do
+        record = double
+        expect(record).to receive(:artwork_url).with(:artwork_name, :size, {:some => 'options'}).and_return('image_url')
+        allow(view_context).to receive(:content_tag).and_yield
+        expect(view_context).to receive(:image_tag).with('image_url', {:alt => nil}).and_return('image-tag-with-url')
+
+        generated_html = view_context.artwork_tag(record, :artwork_name, :size, {:some => 'options'})
+
+        expect(generated_html).to eq 'image-tag-with-url'
+      end
     end
   end
 end

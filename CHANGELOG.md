@@ -11,6 +11,16 @@
 - Added support for custom base resolutions via the following syntax:
   `<%= artwork_tag @record, :cover, '800x@1200' %>`
 - Added `Artwork.actual_resolution` (set via `Artwork.configure_for(request)`)
+- Added support for responsive image sizes via the alternative sizes parameter
+  of `Artwork::Model.artwork_thumb_for(name, size, alternative_sizes = nil)`
+  Example usage:
+
+    Request full-width images if the current browser's viewport is 480 px or
+    less wide:
+
+    ```ruby
+    <%= artwork_tag @recrod, :cover, '800x', {480 => '320x@320'} %>
+    ```
 
 ## v0.6.1
 

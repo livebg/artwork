@@ -59,7 +59,7 @@ module Artwork
 
     describe '#artwork_url' do
       it 'returns the computed url of an attachment by delegating to artwork_thumb_for' do
-        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size).and_return(:computed_size)
+        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size, 'options').and_return(:computed_size)
 
         attachment = double
         expect(attachment).to receive(:url).with(:computed_size, 'options').and_return 'some/url'
@@ -69,7 +69,7 @@ module Artwork
       end
 
       it 'works with two arguments and a hash options' do
-        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size).and_return(:computed_size)
+        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size, :some => 'options').and_return(:computed_size)
 
         attachment = double
         expect(attachment).to receive(:url).with(:computed_size, :some => 'options').and_return 'some/url'
@@ -79,7 +79,7 @@ module Artwork
       end
 
       it 'works with two arguments only without any options hash' do
-        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size).and_return(:computed_size)
+        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size, {}).and_return(:computed_size)
 
         attachment = double
         expect(attachment).to receive(:url).with(:computed_size, {}).and_return 'some/url'
@@ -91,13 +91,14 @@ module Artwork
 
     describe '#artwork_thumb_for' do
       before :each do
-        Artwork.base_resolution = 1000
+        Artwork.base_resolution    = 1000
         Artwork.current_resolution = 1000
+        Artwork.actual_resolution  = 1000
         Artwork.load_2x_images     = false
       end
 
       def expect_thumb(size, expected)
-        expect(instance.artwork_thumb_for(:image, size)).to eq expected
+        expect(instance.artwork_thumb_for(:image, *Array(size))).to eq expected
       end
 
       it 'picks the exact requested size if it exists' do
@@ -201,6 +202,43 @@ module Artwork
 
       it 'returns nil if no thumbnail matches the requested label' do
         expect_thumb '319x_nonexistant_label', nil
+      end
+
+      context 'with an alternative sizes definition' do
+        it 'ignores alternative sizes if current resolution is above all the max resolutions given' do
+          Artwork.current_resolution = 1000
+          Artwork.actual_resolution  = 1000
+
+          expect_thumb ['320x', {700 => '100x@100'}], :'320x'
+        end
+
+        it 'picks the first alternative size if current resolution is smaller than all max resolutions' do
+          Artwork.current_resolution = 799
+          Artwork.actual_resolution  = 799
+
+          expect_thumb ['320x', {1280 => '500x', 800 => '1000x'}], :'1280x'
+        end
+
+        it 'picks the first alternative size if current resolution is smaller than all max resolutions and supports custom base resolutions' do
+          Artwork.current_resolution = 799
+          Artwork.actual_resolution  = 799
+
+          expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100'}], :'1280x'
+        end
+
+        it 'compares resolutions with <=' do
+          Artwork.current_resolution = 800
+          Artwork.actual_resolution  = 800
+
+          expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100'}], :'1280x'
+        end
+
+        it 'picks the largest alternative size if current resolution is smaller only than the max resolution given' do
+          Artwork.current_resolution = 1200
+          Artwork.actual_resolution  = 1200
+
+          expect_thumb ['320x', {1280 => '50x@100', 800 => '100x@100'}], :'640x'
+        end
       end
     end
   end
