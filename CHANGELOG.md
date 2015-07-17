@@ -3,6 +3,8 @@
 **Backwards-incompatible changes**
 
 - Renamed `Artwork.default_resolution` to `Artwork.base_resolution`
+- Renamed `Artwork.actual_resolution_for` to `Artwork.actual_resolution_from`
+  and is now private
 
 **Other changes**
 
