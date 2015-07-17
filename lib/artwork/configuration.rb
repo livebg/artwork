@@ -36,16 +36,6 @@ module Artwork
       set :current_resolution, resolution
     end
 
-    def actual_resolution_from(request)
-      browser_width = request.cookies['_width'].to_i
-
-      if browser_width > 0
-        browser_width
-      else
-        base_resolution
-      end
-    end
-
     def configure_for(request)
       Artwork.load_2x_images     = fetch_2x_images_flag_from(request)
       Artwork.current_resolution = current_resolution_from(request)
@@ -80,6 +70,16 @@ module Artwork
       end
 
       supported_resolutions_list.last
+    end
+
+    def actual_resolution_from(request)
+      browser_width = request.cookies['_width'].to_i
+
+      if browser_width > 0
+        browser_width
+      else
+        base_resolution
+      end
     end
   end
 end
