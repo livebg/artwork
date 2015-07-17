@@ -1,11 +1,26 @@
 # Artwork
 
-Automated user-resolution-based image size choosing for your Rails views, but
-done at the backend. Works for any browser. Delivers the information needed for
-the calculations (browser window's dimentions and device's pixel ratio) via a
-cookie. Supports only Paperclip attachments.
+The Artwork gem provides simple server-side responsive images support for Rails
+which is similar in concept to the `<picture>` tag spec but requires no
+JavaScript, doesn't make extra requests and works in all browsers.
+
+Currently it supports only Paperclip attachments, but that can be changed
+failry easily.
 
 The gem should be thread-safe and should work with Rails 2.3 or newer.
+
+## How it works
+
+To do this "magic", the gem needs some information from the browser. Two pieces
+of knowledge travel from the browser to the server via a cookie:
+
+- the browser window's dimentions (width in pixels)
+- the device's pixel ratio
+
+These values are set in a cookie as early as possible during the first page
+load and then the page is reloaded with JavaScript. If these values change
+later on, for example if the user resizes their browser, no automatic reloading
+is performed.
 
 ## An example
 
@@ -56,7 +71,8 @@ Or install it yourself as:
 
     $ gem install artwork
 
-Add the following line at the top of your `<head>` section:
+Add the following line at the top of your `<head>` section, as early as
+possible, but **after** any `<meta viewport>` tags:
 
     <%= activate_resolution_independence %>
 
@@ -68,6 +84,11 @@ so you could prevent this if you add (*ABOVE* the top script):
 
     <style> .artwork-reload-splash body { display: none; } </style>
     <%= activate_resolution_independence %>
+
+### When you have a viewport meta tag
+
+If you have `<meta viewport>` tags, place them **before** the
+`activate_resolution_independence` call.
 
 ### Usage in frames
 
@@ -153,7 +174,6 @@ For a thumb to be returned as matching, all of the following must be true:
   If no retuna thumb exists, a non-retina one will be selected.
 
 If no such thumb exist, the largest one will match.
-
 
 ## Contributing
 
