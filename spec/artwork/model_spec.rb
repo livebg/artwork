@@ -91,7 +91,7 @@ module Artwork
 
     describe '#artwork_thumb_for' do
       before :each do
-        Artwork.default_resolution = 1000
+        Artwork.base_resolution = 1000
         Artwork.current_resolution = 1000
         Artwork.load_2x_images     = false
       end
@@ -110,7 +110,7 @@ module Artwork
       end
 
       it 'scales the required size according to current_resolution' do
-        Artwork.default_resolution = 1000
+        Artwork.base_resolution = 1000
         Artwork.current_resolution = 2000
 
         expect_thumb '1000x', :'2000x'
@@ -136,7 +136,7 @@ module Artwork
         expect_thumb 'unsupported', :unsupported
 
         Artwork.load_2x_images     = true
-        Artwork.default_resolution = 1000
+        Artwork.base_resolution = 1000
         Artwork.current_resolution = 5000
 
         expect_thumb 'unsupported', :unsupported

@@ -107,7 +107,7 @@ This has to happen before the `<%= activate_resolution_independence %>` call.
 Set the following variables in an app initializer:
 
 - `Artwork.supported_resolutions_list`
-- `Artwork.default_resolution`
+- `Artwork.base_resolution`
 
 Name your Paperclip attachment styles using the following convention:
 
@@ -129,7 +129,7 @@ conventions will be ignored and will bypass the artwork auto-sizing logic.
 
 Configure the gem by putting the following code in `config/initializers/artwork.rb`:
 
-    Artwork.default_resolution = 1440
+    Artwork.base_resolution = 1440
     Artwork.supported_resolutions_list = [1024, 1280, 1440, 1600, 1920, 2048, 3200, 3840]
 
 Include `Artwork::Model` in your models which have artworks.
@@ -145,7 +145,7 @@ the `artwork_tag` view helper. Example:
 
 ### Base (default) resolution
 
-The base resolution defeined by `Artwork.default_resolution` is there to assist
+The base resolution defeined by `Artwork.base_resolution` is there to assist
 in development and to make calculating the image width percentage in relation
 to the viewport width easier.
 
@@ -170,7 +170,7 @@ This effectively means "size the image as 2/3 of the viewport width".
 The following criteria are taken into account for picking up the appropriate
 thumb name:
 
-- The `default_resolution` specified in the Artwork configuration file.
+- The `base_resolution` specified in the Artwork configuration file.
 - The current resolition, approximated to the nearest supported resolution
   which is larger than the current user's one.
 - Whether or not the screen is retina.

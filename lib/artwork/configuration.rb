@@ -11,13 +11,13 @@ module Artwork
       set :supported_resolutions_list, list
     end
 
-    def default_resolution
-      get(:default_resolution) or @@default_resolution or raise "Please set #{__method__}"
+    def base_resolution
+      get(:base_resolution) or @@base_resolution or raise "Please set #{__method__}"
     end
 
-    def default_resolution=(resolution)
-      @@default_resolution ||= resolution
-      set :default_resolution, resolution
+    def base_resolution=(resolution)
+      @@base_resolution ||= resolution
+      set :base_resolution, resolution
     end
 
     def load_2x_images?
@@ -29,7 +29,7 @@ module Artwork
     end
 
     def current_resolution
-      get(:current_resolution) || default_resolution
+      get(:current_resolution) || base_resolution
     end
 
     def actual_resolution_for(request)
@@ -38,7 +38,7 @@ module Artwork
       if browser_width > 0
         browser_width
       else
-        default_resolution
+        base_resolution
       end
     end
 
@@ -73,7 +73,7 @@ module Artwork
     def current_resolution_from(request)
       browser_width = request.cookies['_width'].to_i
 
-      return default_resolution if browser_width.zero?
+      return base_resolution if browser_width.zero?
 
       supported_resolutions_list.each do |resolution|
         return resolution if browser_width <= resolution

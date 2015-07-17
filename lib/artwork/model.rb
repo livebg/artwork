@@ -7,7 +7,7 @@ module Artwork
         base_resolution = $2.to_f
         size = $1
       else
-        base_resolution = Artwork.default_resolution.to_f
+        base_resolution = Artwork.base_resolution.to_f
       end
 
       desired_thumb = Thumbnail.new(size)

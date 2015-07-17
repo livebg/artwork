@@ -6,7 +6,7 @@ module Artwork
 
     before :each do
       [
-        :default_resolution, :supported_resolutions_list,
+        :base_resolution, :supported_resolutions_list,
         :current_resolution, :load_2x_images
       ].each do |key|
 
@@ -15,7 +15,7 @@ module Artwork
       end
     end
 
-    [:default_resolution, :supported_resolutions_list].each do |option_name|
+    [:base_resolution, :supported_resolutions_list].each do |option_name|
       describe "##{option_name}" do
         let(:default_value) { option_name == :supported_resolutions_list ? [1440] : 1440 }
         let(:custom_value) { option_name == :supported_resolutions_list ? [1024] : 1024 }
@@ -70,8 +70,8 @@ module Artwork
     end
 
     describe '#current_resolution' do
-      it 'falls back to default_resolution' do
-        expect(config).to receive(:default_resolution).and_return('default')
+      it 'falls back to base_resolution' do
+        expect(config).to receive(:base_resolution).and_return('default')
         expect(config.current_resolution).to eq 'default'
       end
     end
@@ -90,7 +90,7 @@ module Artwork
 
         config.reset_configuration
 
-        expect(config).to receive(:default_resolution).and_return('default')
+        expect(config).to receive(:base_resolution).and_return('default')
         expect(config.current_resolution).to eq 'default'
       end
 
@@ -119,7 +119,7 @@ module Artwork
 
       it 'sets the load_2x_images flag from the _retina cookie' do
         config.supported_resolutions_list = [1000, 2000, 3000]
-        config.default_resolution = 1000
+        config.base_resolution = 1000
 
         config.configure_for make_request('_retina' => '0')
         expect(config.load_2x_images?).to eq false
@@ -141,9 +141,9 @@ module Artwork
         expect(config.current_resolution).to eq 3000
       end
 
-      it 'falls back to default_resolution if no _width cookie' do
+      it 'falls back to base_resolution if no _width cookie' do
         config.supported_resolutions_list = []
-        config.default_resolution = 5000
+        config.base_resolution = 5000
 
         config.configure_for make_request
 
