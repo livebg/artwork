@@ -15,10 +15,18 @@ module Artwork
       image_url = record.artwork_url attachment_name, size, options
 
       if options[:auto_height]
-        image = record.send(attachment_name)
+        if options[:auto_height].respond_to?(:first)
+          image_width = options[:auto_height].first
+          image_height = options[:auto_height].last
+        else
+          image = record.send(attachment_name)
 
-        if image.height.present? and image.width.present?
-          padding = ((image.height.to_f / image.width) * 100).round(4)
+          image_width  = image.width
+          image_height = image.height
+        end
+
+        if image_width.present? and image_height.present?
+          padding = ((image_height.to_f / image_width) * 100).round(4)
 
           img_holder_options[:style] = "padding-bottom:#{padding}%;"
         end
