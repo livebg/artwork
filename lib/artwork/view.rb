@@ -16,7 +16,7 @@ module Artwork
 
       if options[:auto_height]
         if options[:auto_height].respond_to?(:first)
-          image_width = options[:auto_height].first
+          image_width  = options[:auto_height].first
           image_height = options[:auto_height].last
         else
           image = record.send(attachment_name)
