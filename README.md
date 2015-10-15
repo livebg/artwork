@@ -4,8 +4,7 @@ The Artwork gem provides simple server-side responsive images support for Rails
 which is similar in concept to the `<picture>` tag spec but requires no
 JavaScript, doesn't make extra requests and works in all browsers.
 
-Currently it supports only Paperclip attachments, but that can be changed
-failry easily.
+You could use it either with Paperclip attachments or implement a couple of methods yourself in plain Ruby.
 
 The gem should be thread-safe and should work with Rails 2.3 or newer.
 
@@ -50,8 +49,9 @@ you have a _2x versions of your thumbs, the helper will choose the _2x one.
 
 - Ruby 1.8.7 or newer
 - Rails 2.3 or newer
-- Paperclip 2.3 or newer
 - A JavaScript runtime
+
+If you're using Paperclip, it should be 2.3 or newer.
 
 ## Installation
 
@@ -109,7 +109,7 @@ Set the following variables in an app initializer:
 - `Artwork.supported_resolutions_list`
 - `Artwork.base_resolution`
 
-Name your Paperclip attachment styles using the following convention:
+Name your attachment styles using the following convention:
 
     :'320x'
     :'320x_2x'
@@ -124,6 +124,69 @@ Name your Paperclip attachment styles using the following convention:
 
 The artwork methods will recognize and work with these styles. All other naming
 conventions will be ignored and will bypass the artwork auto-sizing logic.
+
+### Plain Ruby Model
+
+A plain Ruby model will look like this:
+[example in the specs](spec/examples/model_without_paperclip_spec.rb)
+
+```ruby
+class User
+  include Artwork::Model
+
+  def attachment_styles_for(attachment_name)
+    if attachment_name.to_sym == :avatar
+      [
+        :'320x',
+        :'320x_2x',
+        :'320x_some_label',
+        :'320x_some_label_2x',
+        :'320x500',
+        :'320x500_2x',
+        :'320x500_crop',
+        :'320x500_crop_2x',
+        :'320x500_black_and_white_crop',
+        :'320x500_black_and_white_crop_2x',
+      ]
+    end
+  end
+
+  def avatar
+    Avatar.new
+  end
+end
+
+class Avatar
+  def url(style, options)
+    "/avatars/avatar-#{style}.jpg"
+  end
+end
+```
+
+### ActiveRecord Model with Paperclip
+
+An ActiveRecord Model with Paperclip will look like this:
+[example in the specs](spec/examples/model_with_paperclip_spec.rb)
+
+```ruby
+class UserWithPaperclip < ActiveRecord::Base
+  include Artwork::Model
+
+  has_attached_file :avatar,
+    path: '/tmp/avatars/:basename-:style.:extension',
+    url: '/avatars/:basename-:style.:extension',
+    styles: {
+      :'320x'               => '320x>',
+      :'320x_2x'            => '640x>',
+      :'320x_some_label'    => '320x>',
+      :'320x_some_label_2x' => '640x>',
+      :'320x500'            => '320x500>',
+      :'320x500_2x'         => '640x1000>',
+      :'320x500_crop'       => '320x500#',
+      :'320x500_crop_2x'    => '640x1000#',
+    }
+end
+```
 
 ## Usage Example
 

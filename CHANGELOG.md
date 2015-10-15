@@ -1,3 +1,8 @@
+## v0.7.3
+
+- Paperclip is no longer a dependency
+- Change a little the `auto_height` option of `artwork_tag`
+
 ## v0.7.2
 
 - Use `Artwork.current_resolution` instead of `Artwork.actual_resolution` in
