@@ -2,34 +2,60 @@ module Artwork
   class Thumbnail
     include Comparable
 
-    NAME_PATTERN = /^(\d+)x(\d+)?((?!_2x)_\w*?)?(_2x)?$/i.freeze
+    STYLE_PATTERN = /\A
+      (?<name>
+        (?<width>\d+)x(?<height>\d+)?
+        (?<label>(?!_2x)_\w*?)?
+        (?<retina_flag>_2x)?
+      )
+    \z/ix.freeze
 
-    attr :name
-    attr :width
-    attr :height
-    attr :label
-    attr :aspect_ratio
+    class << self
+      def from_style(style)
+        data = {}
 
-    def initialize(name)
-      @name = name.to_s
+        if match = style.to_s.match(STYLE_PATTERN)
+          data[:name]   = match[:name]
+          data[:width]  = match[:width].to_i
+          data[:height] = match[:height].to_i
+          data[:label]  = match[:label] ? match[:label].gsub(/^_|_$/, '') : nil
+          data[:retina] = !!match[:retina_flag]
 
-      if match = @name.match(NAME_PATTERN)
-        @width       = match[1].to_i
-        @height      = match[2].to_i
-        @label       = match[3] ? match[3].gsub(/^_|_$/, '') : nil
-        @retina_flag = match[4]
+          if data[:retina]
+            data[:width]  *= 2
+            data[:height] *= 2
+          end
+        else
+          data[:name] = style.to_s
+        end
+
+        new(data)
       end
 
-      @height = nil if @height == 0
+      def compatible?(style)
+        style.to_s =~ STYLE_PATTERN ? true : false
+      end
+    end
+
+    def initialize(name:, width: nil, height: nil, label: nil, retina: false)
+      @name   = name
+      @width  = width
+      @height = height == 0 ? nil : height
+      @label  = label
+      @retina = retina
+
       @aspect_ratio = @width.to_f / @height if @height
     end
+
+    attr_accessor :name, :width, :height, :label, :aspect_ratio
+    attr_writer :retina
 
     def compatible?
       not width.nil?
     end
 
     def retina?
-      @retina_flag == '_2x'
+      @retina
     end
 
     def same_aspect_ratio_with?(other_thumb)
@@ -38,22 +64,37 @@ module Artwork
       (0.0..0.1).include? (aspect_ratio - other_thumb.aspect_ratio).abs
     end
 
-    def <=>(other_thumb)
-      width <=> other_thumb.width
+    def <=>(other)
+      if self.height.nil? and other.height.nil?
+        (self.width || -1) <=> (other.width || -1)
+      elsif !self.height.nil? and !other.height.nil?
+        result = (self.width || -1) <=> (other.width || -1)
+
+        if result == 0
+          result = self.height <=> other.height
+        end
+
+        result
+      elsif self.height.nil?
+        -1
+      else
+        1
+      end
     end
 
     def eq(other)
-      name    == other.name and \
-      width   == other.width and \
-      height  == other.height and \
-      label   == other.label and \
-      retina? == other.retina?
+      self.name == other.name &&
+        self.width   == other.width &&
+        self.height  == other.height &&
+        self.label   == other.label &&
+        self.retina? == other.retina?
     end
 
     alias == eq
 
-    def self.compatible?(name)
-      name.to_s =~ NAME_PATTERN ? true : false
+    def is_like?(other)
+      self.label == other.label &&
+        (self.aspect_ratio.nil? || self.same_aspect_ratio_with?(other))
     end
   end
 end
