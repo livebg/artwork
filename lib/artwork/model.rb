@@ -15,19 +15,19 @@ module Artwork
     def attachment_style_for(attachment_name, size, alternative_sizes = nil)
       size = determine_alternative_size_for(alternative_sizes) || size
 
-      result =
+      thumb =
         if DesiredThumbnail.compatible?(size)
           artwork_thumb_for(attachment_name, size)
         else
           plain_thumb_for(attachment_name, size)
         end
 
-      return nil unless result
+      return nil unless thumb
 
-      if result.respond_to?(:name)
-        result.name.to_sym
+      if thumb.respond_to?(:name)
+        thumb.name.to_sym
       else
-        result.to_sym
+        thumb.to_sym
       end
     end
 
