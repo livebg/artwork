@@ -40,7 +40,7 @@ module Artwork
 
       thumbs = artwork_thumbs_for(attachment_name)
 
-      thumbs = thumbs.select { |thumb| desired_thumb.is_like?(thumb) }.sort
+      thumbs = thumbs.select(&:compatible?).select { |thumb| desired_thumb.is_like?(thumb) }.sort
 
       if Artwork.load_2x_images?
         retina_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
@@ -63,26 +63,17 @@ module Artwork
     end
 
     def normal_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
-      wanted_width = desired_thumb.expected_width
+      usable_thumbs = thumbs.reject(&:retina?)
 
-      usable_thumbs = thumbs.select(&:compatible?).reject(&:retina?)
+      thumb = usable_thumbs.find { |current| desired_thumb.expected_width <= current.width }
 
-      return nil if usable_thumbs.empty?
-
-      thumb = usable_thumbs.find { |current| wanted_width <= current.width }
-
-      # If we did not find any matching attachment definitions,
-      # the desired size is probably larger than all of our thumb widths,
-      # So pick the largest one we have.
       thumb || usable_thumbs.max_by(&:width)
     end
 
     def retina_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
-      wanted_width = desired_thumb.expected_width
+      retina_thumbs = thumbs.select(&:retina?)
 
-      retina_thumbs = thumbs.select(&:compatible?).select(&:retina?)
-
-      thumb = retina_thumbs.find { |current| wanted_width <= current.width }
+      thumb = retina_thumbs.find { |current| desired_thumb.expected_width <= current.width }
 
       thumb || normal_artwork_thumb_for(attachment_name, thumbs, desired_thumb) || retina_thumbs.max_by(&:width)
     end
