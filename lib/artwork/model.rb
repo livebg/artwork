@@ -74,7 +74,7 @@ module Artwork
       # If we did not find any matching attachment definitions,
       # the desired size is probably larger than all of our thumb widths,
       # So pick the largest one we have.
-      thumb || usable_thumbs.max_by { |current| current.width }
+      thumb || usable_thumbs.max_by(&:width)
     end
 
     def retina_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
@@ -84,7 +84,7 @@ module Artwork
 
       thumb = retina_thumbs.find { |current| wanted_width <= current.width }
 
-      thumb || normal_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
+      thumb || normal_artwork_thumb_for(attachment_name, thumbs, desired_thumb) || retina_thumbs.max_by(&:width)
     end
 
     private
