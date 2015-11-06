@@ -15,21 +15,24 @@ module Artwork
       File.dirname(__FILE__)
     end
 
-    def scale_in_current_resolution(size, base_resolution = nil)
+    def desired_thumb_for(size, base_resolution = nil)
       if size.is_a? Numeric
-        width = size
+        DesiredThumbnail.new(width: size, base_resolution: base_resolution)
       else
-        size, base = size.split('@')
+        thumb = DesiredThumbnail.from_style(size)
 
-        width = Thumbnail.from_style(size).width || 0
-        base_resolution ||= base
+        thumb.base_resolution = base_resolution if base_resolution
+
+        thumb
       end
+    end
 
-      base_resolution ||= Artwork.base_resolution
+    def scale_in_current_resolution(size, base_resolution = nil)
+      desired_thumb_for(size, base_resolution).width_in_current_resolution
+    end
 
-      resolution_ratio = base_resolution.to_f / Artwork.current_resolution.to_f
-
-      width.to_f / resolution_ratio
+    def expected_width_for(size, base_resolution = nil)
+      desired_thumb_for(size, base_resolution).expected_width
     end
   end
 end

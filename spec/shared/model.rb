@@ -222,6 +222,17 @@ RSpec.shared_examples 'an artwork model' do
       expect_thumb '319x_nonexistant_label', nil
     end
 
+    it 'will return the exact thumb for retina thumbs' do
+      expect_thumb '320x_2x', :'320x_2x'
+      expect_thumb '310x_2x', nil
+
+      Artwork.current_resolution = 1111
+      expect_thumb '320x_2x', :'320x_2x'
+
+      Artwork.load_2x_images = true
+      expect_thumb '320x_2x', :'320x_2x'
+    end
+
     context 'with an alternative sizes definition' do
       it 'ignores alternative sizes if current resolution is above all the max resolutions given' do
         Artwork.current_resolution = 1000
