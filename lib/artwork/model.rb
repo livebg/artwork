@@ -43,9 +43,9 @@ module Artwork
       thumbs = thumbs.select { |thumb| desired_thumb.is_like?(thumb) }.sort
 
       if Artwork.load_2x_images?
-        artwork_retina_thumb_for(attachment_name, thumbs, desired_thumb)
+        retina_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
       else
-        artwork_normal_thumb_for(attachment_name, thumbs, desired_thumb)
+        normal_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
       end
     end
 
@@ -62,7 +62,7 @@ module Artwork
       end
     end
 
-    def artwork_normal_thumb_for(attachment_name, thumbs, desired_thumb)
+    def normal_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
       wanted_width = desired_thumb.expected_width
 
       usable_thumbs = thumbs.select(&:compatible?).reject(&:retina?)
@@ -77,14 +77,14 @@ module Artwork
       thumb || usable_thumbs.max_by { |current| current.width }
     end
 
-    def artwork_retina_thumb_for(attachment_name, thumbs, desired_thumb)
+    def retina_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
       wanted_width = desired_thumb.expected_width
 
       retina_thumbs = thumbs.select(&:compatible?).select(&:retina?)
 
       thumb = retina_thumbs.find { |current| wanted_width <= current.width }
 
-      thumb || artwork_normal_thumb_for(attachment_name, thumbs, desired_thumb)
+      thumb || normal_artwork_thumb_for(attachment_name, thumbs, desired_thumb)
     end
 
     private
