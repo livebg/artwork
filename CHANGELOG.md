@@ -1,3 +1,24 @@
+## v1.0.0
+
+This is a release with major changes in the logic for selecting thumbs and
+refactoring to allow easier overriding of parts of the artwork logic in the
+application.
+
+Changes include:
+
+- When you're trying to select a retina thumb, the gem will try to select one
+  that is at least as wide or wider than the desired size and if there isn't
+  such a thumb the search will fallback to normal, non-retina thumbs.
+- Requesting a thumb style of '320x' will select sizes like '420x500', i.e.
+  sizes with height or a label only if there isn't a single thumb, larger than
+  the requested size and with no height and no label.
+- `artwork_thumb_for` has been renamed to `attachment_style_for`. Keep in mind
+  that now there's a different method named `artwork_thumb_for` which
+  selects only a compatible artwork thumb/style. Another new method, named
+  `plain_thumb_for` works for non-artwork compatible thumbs, e.g. `:foobar`.
+- The internal API has been changed to some extent due to refactoring and
+  changes.
+
 ## v0.7.3
 
 - Paperclip is no longer a dependency

@@ -58,8 +58,8 @@ RSpec.shared_examples 'an artwork model' do
 
   describe '#artwork_url' do
     describe 'behaviour' do
-      it 'returns the computed url of an attachment by delegating to artwork_thumb_for' do
-        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size, 'options').and_return(:computed_size)
+      it 'returns the computed url of an attachment by delegating to attachment_style_for' do
+        expect(instance).to receive(:attachment_style_for).with(:photo, :size, 'options').and_return(:computed_size)
 
         attachment = double
         expect(attachment).to receive(:url).with(:computed_size, 'options').and_return 'some/url'
@@ -69,7 +69,7 @@ RSpec.shared_examples 'an artwork model' do
       end
 
       it 'works with two arguments and a hash options' do
-        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size, :some => 'options').and_return(:computed_size)
+        expect(instance).to receive(:attachment_style_for).with(:photo, :size, :some => 'options').and_return(:computed_size)
 
         attachment = double
         expect(attachment).to receive(:url).with(:computed_size, :some => 'options').and_return 'some/url'
@@ -79,7 +79,7 @@ RSpec.shared_examples 'an artwork model' do
       end
 
       it 'works with two arguments only without any options hash' do
-        expect(instance).to receive(:artwork_thumb_for).with(:photo, :size, {}).and_return(:computed_size)
+        expect(instance).to receive(:attachment_style_for).with(:photo, :size, {}).and_return(:computed_size)
 
         attachment = double
         expect(attachment).to receive(:url).with(:computed_size, {}).and_return 'some/url'
@@ -107,7 +107,7 @@ RSpec.shared_examples 'an artwork model' do
     end
   end
 
-  describe '#artwork_thumb_for' do
+  describe '#attachment_style_for' do
     before :each do
       Artwork.base_resolution    = 1000
       Artwork.current_resolution = 1000
@@ -116,7 +116,7 @@ RSpec.shared_examples 'an artwork model' do
     end
 
     def expect_thumb(size, expected)
-      expect(instance.artwork_thumb_for(attachment_name, *Array(size))).to eq expected
+      expect(instance.attachment_style_for(attachment_name, *Array(size))).to eq expected
     end
 
     it 'picks the exact requested size if it exists' do
@@ -154,7 +154,7 @@ RSpec.shared_examples 'an artwork model' do
     it 'passes through unsupported thumb names' do
       expect_thumb 'unsupported', :unsupported
 
-      Artwork.load_2x_images     = true
+      Artwork.load_2x_images = true
       Artwork.base_resolution = 1000
       Artwork.current_resolution = 5000
 
@@ -162,7 +162,7 @@ RSpec.shared_examples 'an artwork model' do
     end
 
     it 'picks the nearest non-retina size to our desizred size' do
-      expect_thumb '390x', :'400x500'
+      expect_thumb '390x', :'640x'
       expect_thumb '420x', :'640x'
     end
 
@@ -202,16 +202,16 @@ RSpec.shared_examples 'an artwork model' do
       expect_thumb '319x498_crop', :'320x500_crop'
     end
 
-    it 'returns the largest thumb with the requested label if no other suitable sizes are found' do
+    it 'returns the largest nonretina thumb with the requested label if no other suitable sizes are found' do
       expect_thumb '20000x_crop', :'320x500_crop'
       Artwork.load_2x_images = true
-      expect_thumb '20000x_crop', :'320x500_crop_2x'
+      expect_thumb '20000x_crop', :'320x500_crop'
     end
 
-    it 'returns the largest thumb with the requested aspect ratio if no other suitable sizes are found' do
+    it 'returns the largest nonretina thumb with the requested aspect ratio if no other suitable sizes are found' do
       expect_thumb '8000x10000', :'400x500'
       Artwork.load_2x_images = true
-      expect_thumb '8000x10000', :'400x500_2x'
+      expect_thumb '8000x10000', :'400x500'
     end
 
     it 'returns nil if no thumbnail matches the requested aspect ratio' do
@@ -220,6 +220,17 @@ RSpec.shared_examples 'an artwork model' do
 
     it 'returns nil if no thumbnail matches the requested label' do
       expect_thumb '319x_nonexistant_label', nil
+    end
+
+    it 'will return the exact thumb for retina thumbs' do
+      expect_thumb '320x_2x', :'320x_2x'
+      expect_thumb '310x_2x', nil
+
+      Artwork.current_resolution = 1111
+      expect_thumb '320x_2x', :'320x_2x'
+
+      Artwork.load_2x_images = true
+      expect_thumb '320x_2x', :'320x_2x'
     end
 
     context 'with an alternative sizes definition' do
