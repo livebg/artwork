@@ -34,7 +34,11 @@ module Artwork
 
       content_tag :div, :class => attachment_name do
         content_tag :div, img_holder_options.merge(:class => 'img-holder') do
-          image_tag image_url, image_tag_options
+          if options[:lazy]
+            image_tag Artwork.blank_image, image_tag_options.merge(:lazy => nil, :class => Artwork.lazy_loading_class, 'data-src': image_url)
+          else  
+            image_tag image_url, image_tag_options
+          end
         end
       end
     end

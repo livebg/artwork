@@ -14,10 +14,28 @@ module Artwork
     def base_resolution
       get(:base_resolution) or @@base_resolution or raise "Please set #{__method__}"
     end
-
+    
     def base_resolution=(resolution)
       @@base_resolution ||= resolution
       set :base_resolution, resolution
+    end
+    
+    def blank_image
+      get(:blank_image) or @@blank_image or raise "Please set #{__method__}"
+    end
+
+    def blank_image=(image)
+      @@blank_image ||= image
+      set :blank_image, image
+    end
+
+    def lazy_loading_class
+      get(:lazy_loading_class) or @@lazy_loading_class or raise "Please set #{__method__}"
+    end
+
+    def lazy_loading_class=(image)
+      @@lazy_loading_class ||= image
+      set :lazy_loading_class, image
     end
 
     def load_2x_images?
